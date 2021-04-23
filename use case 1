@@ -1,0 +1,102 @@
+sudo mysql -u root
+
+use test_aravith;
+
+create table agent(
+agent_code varchar(4) NOT NULL,
+agent_name varchar(10),
+country varchar(10),
+phone_no varchar(10),
+staus bit(1),
+primary key(agent_code)
+);
+
+
+create table customer(
+cust_code varchar(4),
+cust_name varchar(10),
+cust_city varchar(10),
+phone_no varchar(10),
+agent_code varchar(4),
+primary key(cust_code),
+foreign key(agent_code) references agent(agent_code)
+);
+
+create table orders(
+order_num varchar(4) NOT NULL,
+cust_code varchar(4),
+agent_code varchar(4),
+amount double,
+order_date date,
+primary key(order_num),
+foreign key(agent_code) references agent(agent_code),
+foreign key(cust_code) references customer(cust_code)
+);
+
+---insert into tables
+
+insert into agent(agent_code,agent_name,country,phone_no,staus)
+values
+('A001','joe','canada','2345623452',0),
+('A002','sara','india','2345623453',1),
+('A003','wiley','bahamas','2345623454',1),
+('A004','katniss','ireland','2345623455',1),
+('A005','arjun','india','2345623456',0)
+;
+
+insert into customer(cust_code,cust_name,cust_city,phone_no,agent_code)
+values
+('C001','albert','chennai','9798865876','A001'),
+('C002','ravi','bangolre','9876123456','A002'),
+('C003','archana','chennai','9452309813','A004'),
+('C004','riya','trichy','9612309876','A002'),
+('C005','pavithra','kumari','9612309856','A005')
+;
+
+insert into orders(order_num,cust_code,agent_code,amount,order_date)
+values
+('O001','C001','A001',50000,'2021-02-12'),
+('O002','C002','A002',3000,'2021-03-26'),
+('O003','C005','A004',25000,'2021-01-21'),
+('O004','C003','A003',6000,'2021-03-06'),
+('O006','C004','A005',100000,'2019-09-13')
+;
+
+view data
+select * from orders;
+
+alter table agent add column(Commission double);
+
+update agent set Commission = 0.2 where agent_code = 'A001';
+update agent set Commission = 0.96 where agent_code = 'A002';
+update agent set Commission = 0.23 where agent_code = 'A003';
+update agent set Commission = 0.12 where agent_code = 'A004';
+update agent set Commission = 0.76 where agent_code = 'A005';
+
+select * from agent;
+
+
+alter table agent drop column phone_no;
+
+
+select * from agent;
+
+alter table agent change column Commission commision_percentage double;
+
+create table agent_details as select * from agent;
+ 
+create table orders_dup as select * from orders;
+
+delete * from orders;//not working
+
+truncate table orders;
+
+DESCRIBE orders;  
+
+alter table orders
+alter amount SET DEFAULT 1000;
+
+DESCRIBE orders;
+
+
+

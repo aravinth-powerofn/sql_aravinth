@@ -1,0 +1,90 @@
+create table student(
+id varchar(4) not null,
+name varchar(15),
+department varchar(5),
+cgpa double,
+primary key(id)
+);
+
+
+insert into student(id,name,department,cgpa)
+values
+('S001','ARUN','CS',8),
+('S002','GITA','CS',7.5),
+('S003','KUMAR','IT',6),
+('S004','ROHIT','IT',8.5),
+('S005','YAMUNA','ECE',9),
+('S006','YOGESH','ECE',9)
+;
+
+create table company(
+id varchar(4) not null,
+name varchar(15),
+location varchar(15),
+interview_date date,
+primary key(id)
+);
+
+
+insert into company(id,name,location,interview_date)
+values
+('C001','MICROSOFT','BANGALORE','2020-08-01'),
+('C002','AMAZON','CHENNAI','2020-09-10'),
+('C003','FLIPKART','BANGALORE','2020-09-15'),
+('C004','HONEYWELL','HYDERABAD','2020-10-30'),
+('C005','ACCENTURE','CHENNAI','2020-11-30'),
+('C006','WIPRO','NOIDA','2020-12-31')
+;
+
+create table placement(
+s_id varchar(4),
+c_id varchar(4),
+pakage double,
+)
+;
+
+
+insert into placement(s_id,c_id,pakage)
+values
+('S001','C001',2000000),
+('S002','C001',2000000),
+('S003','C002',1200000),
+('S004','C004',700000),
+('S004','C006',400000),
+('S006','C004',700000)
+;
+
+
+Q1)
+select S.name as STUDENT,C.name as COMPANY,pakage from student S JOIN company C JOIN placement P WHERE S.id=P.s_id AND C.id = P.c_id AND pakage = (SELECT MAX(pakage) from placement);
+
+
+Q2)
+
+select S.name as STUDENT,S.department,(case when S.id in (select s_id from placement) then 'YES' else 'NO' end) as PLACED,C.name as COMPANY,P.pakage from student S left join placement P on S.id=P.s_id left join company C on P.c_id=C.id where S.department='ECE';
+
+
+q3)
+
+select c.name,count(c.name) from company c inner join placement p on c.id=p.c_id group by c.name;
+
+q4)
+select monthname(interview_date) as Month ,name as Company from company 
+where monthname(interview_date)='September';
+
+q5)
+select name as COMPANY,interview_date as DATE from company;
+
+q6)
+
+select S.name as STUDENT,C.name as COMPANY FROM student S JOIN placement P ON S.id=P.s_id JOIN company C ON P.c_id=C.id WHERE S.id in (select s_id from placement group by s_id having count(*)>1);
+
+
+q7)
+select id,name as student ,department,cgpa from student where cgpa>7 and id not in (select s_id from placement);
+
+q8)
+select name as NAME ,location as LOCATION from company where location like 'B%';
+
+
+
